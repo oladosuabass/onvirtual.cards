@@ -12,21 +12,21 @@ export default function(ctxt) {
 
     if (authCookie) {
       auth = JSON.parse(authCookie)
-      ctxt.store.commit('auth/AUTHENTICATE', auth, { root: true })
+      // ctxt.store.commit('auth/AUTHENTICATE', auth, { root: true })
       if (auth != null) {
-        return ctxt.app.$weavrSecurityAssociate('X-TOKEN ' + auth.token).then(
-          () => {},
-          (err) => {
-            console.log(err)
-          }
-        )
+        // return ctxt.app.$weavrSecurityAssociate('X-TOKEN ' + auth.token).then(
+        //   () => {},
+        //   (err) => {
+        //     console.log(err)
+        //   }
+        // )
       } else {
-        return ctxt.app.$weavrSecurityAssociate(null)
+        // return ctxt.app.$weavrSecurityAssociate(null)
       }
     }
   } catch (err) {
     console.error(err)
-    return ctxt.app.$weavrSecurityAssociate(null)
+    // return ctxt.app.$weavrSecurityAssociate(null)
     // No valid cookie found
   }
 }
