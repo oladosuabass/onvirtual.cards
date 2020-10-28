@@ -17,8 +17,10 @@
             <li>Copy of the Certificate of Incorporation</li>
             <li>Copy of the Articles of Association (last amendment)</li>
             <li>Proof of Business Address (e.g. lease agreement)</li>
-            <li>UBO Declaration Form downloadable from <a href="https://storage.cloud.google.com/weavr-cdn/UBO-a.pdf">here.</a></li>
-            <li>Commercial registry extract showing shareholders and directors</a></li>
+            <li>
+              UBO Declaration Form downloadable from <a href="https://storage.cloud.google.com/weavr-cdn/UBO-a.pdf">here.</a>
+            </li>
+            <li>Commercial registry extract showing shareholders and directors</li>
           </ul>
           <p>
             You will also need to provide the following information:
@@ -37,10 +39,10 @@
       <b-row v-else>
         <b-col>
           <weavr-kyb
-            :corporate-id="corporateId"
-            :access-token="accessToken"
-            :options="kybOptions"
-            @message="handleSumSubMessage"
+                  :corporate-id="corporateId"
+                  :reference-id="reference"
+                  :options="kybOptions"
+                  @message="handleSumSubMessage"
           />
         </b-col>
       </b-row>
@@ -54,7 +56,7 @@ import * as AuthStore from '~/store/modules/Auth'
 import config from '~/config'
 import { KYBOptions } from '~/plugins/weavr/components/api'
 import BaseMixin from '~/minixs/BaseMixin'
-import { corporatesStore } from '~/utils/store-accessor'
+import { $api } from '~/utils/api'
 
 @Component({
   components: {
@@ -63,13 +65,24 @@ import { corporatesStore } from '~/utils/store-accessor'
   }
 })
 export default class KybPage extends mixins(BaseMixin) {
-  accessToken!: string
-  corporateId!: string
+  reference!: string
 
   get kybOptions(): KYBOptions {
     return {
       customCss:
-        "@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam:wght@300;400;500&display=swap');\n\np{ color: #25262B; font-family: 'Be Vietnam', sans-serif;} ul{ column-count: 1; color: #25262B; font-family: 'Be Vietnam', sans-serif; } ul li{ color: #25262B; margin-bottom: 5px; } h4 p, h2, h3.subtitle p{ font-size: 15px; font-weight: 300; margin: 30px 0;} .input-field span, .radio-group span{ text-transform: uppercase; letter-spacing: 0.05em; font-family: 'Be Vietnam', sans-serif; font-weight:500; color: #25262B; } input, select, textarea{ font-family: 'Be Vietnam', sans-serif; height:30px; border-width: 1px; font-size:18px; font-weight: 400; color: #232A47; } input:focus, select:focus, textarea:focus{ border-bottom-color: #D621B2; } input-field{ position:relative;} .input-field span, .radio-group span{ position:absolute; top: 0; height: 20px; } .fields-list.fields-list-two-columns .input-field{ padding-top: 24px; min-height: 40px;} .list li[data-v-044267ea]{ font-family: 'Be Vietnam', sans-serif; color: #25262B; } .flag{ margin-right: 5px;} .upload-item h4{ font-family: 'Be Vietnam', sans-serif; color: #6C1C5C; } .sub-steps .sub-step.active{ color: #3CF7CA; } .sub-steps .sub-step{ width: 12px; height: 12px; } button.submit, button[type=submit]{ background: #3CF7CA; text-transform: lowercase; color: #6C1C5C; font-family: 'Be Vietnam', sans-serif; font-weight: 400; font-size: 15px; letter-spacing: 0;} .mobile-button h3{ font-family: 'Be Vietnam', sans-serif; color: #6C1C5C; font-weight: 500; } .upload-item p{ font-size: 12px; } .mobile-button .fa-icon{ color: #6C1C5C; } .mobile-button h4{ color: #6D7490; font-family: 'Be Vietnam', sans-serif;} button.submit:active:not(:disabled), button.submit:hover:not(:disabled):not(.disabled):not(:active), button[type=submit]:active:not(:disabled), button[type=submit]:hover:not(:disabled):not(.disabled):not(:active){ background: #3CF7CA;} button.submit .arrow, button[type=submit] .arrow{ height: 28px; } .checkbox, .radio-item{ font-family: 'Be Vietnam', sans-serif; color: #232A47; } h4{ font-family: 'Be Vietnam', sans-serif; color: #25262B;} a.payment-method-add{ font-family: 'Be Vietnam', sans-serif; color: #6C1C5C; } a.payment-method-add:hover{ text-decoration: none; } a.payment-method-add .icon{ background: #3CF7CA; width: 38px; height: 38px; } h4.subtitle p{ font-size: 15px; font-weight: 400; color: #6D7490; } h2.uppercase p{ font-weight: 500; } .beneficial-buttons a{ font-family: 'Be Vietnam', sans-serif; color: #6C1C5C; } .error-message .message-content, .error-message .message-title{ font-family: 'Be Vietnam', sans-serif; } .error-message .message-title{ letter-spacing: 0.05em; } .payment-method-data h2{ font-family: 'Be Vietnam', sans-serif; color: #232A47; font-size: 15px; font-weight: 400; } .sub-steps .sub-step.pending{ background: #6C1C5C; }"
+              '@import url(\'https://fonts.googleapis.com/css2?family=Be+Vietnam:wght@300;400;500&display=swap\');\n\np{ color: #25262B; font-family: \'Be Vietnam\', sans-serif;} ul{ column-count: 1; color: #25262B; font-family: \'Be Vietnam\', sans-serif; } ul li{ color: #25262B; margin-bottom: 5px; } h4 p, h2, h3.subtitle p{ font-size: 15px; font-weight: 300; margin: 30px 0;} .input-field span, .radio-group span{ text-transform: uppercase; letter-spacing: 0.05em; font-family: \'Be Vietnam\', sans-serif; font-weight:500; color: #25262B; } input, select, textarea{ font-family: \'Be Vietnam\', sans-serif; height:30px; border-width: 1px; font-size:18px; font-weight: 400; color: #232A47; } input:focus, select:focus, textarea:focus{ border-bottom-color: #D621B2; } input-field{ position:relative;} .input-field span, .radio-group span{ position:absolute; top: 0; height: 20px; } .fields-list.fields-list-two-columns .input-field{ padding-top: 24px; min-height: 40px;} .list li[data-v-044267ea]{ font-family: \'Be Vietnam\', sans-serif; color: #25262B; } .flag{ margin-right: 5px;} .upload-item h4{ font-family: \'Be Vietnam\', sans-serif; color: #6C1C5C; } .sub-steps .sub-step.active{ color: #3CF7CA; } .sub-steps .sub-step{ width: 12px; height: 12px; } button.submit, button[type=submit]{ background: #3CF7CA; text-transform: lowercase; color: #6C1C5C; font-family: \'Be Vietnam\', sans-serif; font-weight: 400; font-size: 15px; letter-spacing: 0;} .mobile-button h3{ font-family: \'Be Vietnam\', sans-serif; color: #6C1C5C; font-weight: 500; } .upload-item p{ font-size: 12px; } .mobile-button .fa-icon{ color: #6C1C5C; } .mobile-button h4{ color: #6D7490; font-family: \'Be Vietnam\', sans-serif;} button.submit:active:not(:disabled), button.submit:hover:not(:disabled):not(.disabled):not(:active), button[type=submit]:active:not(:disabled), button[type=submit]:hover:not(:disabled):not(.disabled):not(:active){ background: #3CF7CA;} button.submit .arrow, button[type=submit] .arrow{ height: 28px; } .checkbox, .radio-item{ font-family: \'Be Vietnam\', sans-serif; color: #232A47; } h4{ font-family: \'Be Vietnam\', sans-serif; color: #25262B;} a.payment-method-add{ font-family: \'Be Vietnam\', sans-serif; color: #6C1C5C; } a.payment-method-add:hover{ text-decoration: none; } a.payment-method-add .icon{ background: #3CF7CA; width: 38px; height: 38px; } h4.subtitle p{ font-size: 15px; font-weight: 400; color: #6D7490; } h2.uppercase p{ font-weight: 500; } .beneficial-buttons a{ font-family: \'Be Vietnam\', sans-serif; color: #6C1C5C; } .error-message .message-content, .error-message .message-title{ font-family: \'Be Vietnam\', sans-serif; } .error-message .message-title{ letter-spacing: 0.05em; } .payment-method-data h2{ font-family: \'Be Vietnam\', sans-serif; color: #232A47; font-size: 15px; font-weight: 400; } .sub-steps .sub-step.pending{ background: #6C1C5C; }'
+    }
+  }
+
+  async asyncData({ store }) {
+    const _corporateId = AuthStore.Helpers.identityId(store)
+    const _result = await $api.post(
+      process.env.BASE_URL_SCRIPT + '/admin/api/corporates/' + _corporateId + '/kyb/start',
+      {}
+    )
+
+    return {
+      reference: _result.data.reference
     }
   }
 
@@ -77,18 +90,8 @@ export default class KybPage extends mixins(BaseMixin) {
     return config.app.sumsub_enabled
   }
 
-  async asyncData({ store }) {
-    const _corproateid = AuthStore.Helpers.identityId(store)
-
-    if (config.app.sumsub_enabled) {
-      try {
-        const _res = await corporatesStore(store).startKYB(_corproateid)
-
-        return { accessToken: _res.data.accessToken, corporateId: _corproateid }
-      } catch (e) {
-        console.log(e)
-      }
-    }
+  get corporateId() {
+    return AuthStore.Helpers.identityId(this.$store)
   }
 
   handleSumSubMessage(message) {

@@ -1,5 +1,5 @@
 <template>
-  <div id="idensic" />
+  <div id="sumsub-websdk-container" />
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from 'nuxt-property-decorator'
@@ -8,19 +8,15 @@ import { KYBOptions } from '~/plugins/weavr/components/api'
 @Component
 export default class WeavrKyb extends Vue {
   @Prop({}) corporateId!: string
-  @Prop({}) accessToken!: string
+  @Prop({}) referenceId!: string
   @Prop({}) options!: KYBOptions
 
   mounted() {
-    this.$OpcUxSecureClient.kyb().init(
-      '#idensic',
-      {
-        accessToken: this.accessToken,
-        externalUserId: this.corporateId
-      },
-      this.sumsubMessage.bind(this),
-      this.options
-    )
+    const token = 'Bearer ' + this.$store.getters['auth/auth'].token
+
+    this.$OpcUxSecureClient
+      .kyb()
+      .init(token, this.corporateId, this.referenceId, '#sumsub-websdk-container', this.options)
   }
 
   @Emit('message')
