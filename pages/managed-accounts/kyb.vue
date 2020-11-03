@@ -38,7 +38,7 @@
         <b-col>
           <weavr-kyb
             :corporate-id="corporateId"
-            :access-token="accessToken"
+            :reference="reference"
             :options="kybOptions"
             @message="handleSumSubMessage"
           />
@@ -63,7 +63,7 @@ import { corporatesStore } from '~/utils/store-accessor'
   }
 })
 export default class KybPage extends mixins(BaseMixin) {
-  accessToken!: string
+  reference!: string
   corporateId!: string
 
   get kybOptions(): KYBOptions {
@@ -84,7 +84,7 @@ export default class KybPage extends mixins(BaseMixin) {
       try {
         const _res = await corporatesStore(store).startKYB(_corproateid)
 
-        return { accessToken: _res.data.accessToken, corporateId: _corproateid }
+        return { reference: _res.data.reference, corporateId: _corproateid }
       } catch (e) {
         console.log(e)
       }

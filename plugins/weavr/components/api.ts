@@ -1,5 +1,6 @@
 'use strict'
 
+
 export interface SecureClient {
   init(publicApiKey: string, options: SecureClientOptions): void
 
@@ -149,32 +150,35 @@ export interface SumSubAuthObject {
   accessToken: string
 }
 
-export interface KYBAuthObject extends SumSubAuthObject {}
+export interface KYBAuthObject extends SumSubAuthObject {
+
+}
 
 export interface KYBOptions {
+  onMessage?: (messageType: any, payload: any) => void,
+  onError?: (error: any) => void
   customCss?: string
+  customCssStr?: string
 }
 
 export interface KYB {
   init(
+    token: string,
+    corporateId: string | number,
+    referenceId: string | number,
     selector: string,
-    auth: KYBAuthObject,
-    listener: (messageType: any, payload: any) => void,
-    options?: KYBOptions
+    opts: KYBOptions
   ): void
 }
 
-export interface KYCAuthObject extends SumSubAuthObject {}
+export interface KYCAuthObject extends SumSubAuthObject {
+
+}
 
 export interface KYCOptions {
   customCss?: string
 }
 
 export interface KYC {
-  init(
-    selector: string,
-    auth: KYCAuthObject,
-    listener: (messageType: any, payload: any) => void,
-    options?: KYCOptions
-  ): void
+  init(selector: string, auth: KYCAuthObject, listener: (messageType: any, payload: any) => void, options?: KYCOptions): void
 }

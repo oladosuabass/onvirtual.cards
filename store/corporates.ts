@@ -8,6 +8,7 @@ import { ConsumeCorporateUserInviteRequest } from '~/api/Requests/Corporates/Con
 import { $api } from '~/utils/api'
 import { ValidateCorporateUserInviteRequest } from '~/api/Requests/Corporates/ValidateCorporateUserInviteRequest'
 import { CorporateKybStatus } from '~/api/Models/Corporates/CorporateKybStatus'
+import { InitKybProcessResponse } from '~/api/Responses/Corporates/InitKybProcessResponse'
 
 @Module({
   name: 'corporatesV2',
@@ -198,7 +199,12 @@ export default class Corporates extends StoreModule {
 
   @Action({ rawError: true })
   startKYB(corporateId) {
-    return $api.post('/app/api/corporates/' + corporateId + '/kyb/start', {})
+    return $api.post<InitKybProcessResponse>('/app/api/corporates/' + corporateId + '/kyb/start', {})
+  }
+
+  @Action({ rawError: true })
+  startKYC(corporateId) {
+    return $api.post<InitKybProcessResponse>('/app/api/corporates/' + corporateId + '/kyb/start', {})
   }
 
   @Action({ rawError: true })
