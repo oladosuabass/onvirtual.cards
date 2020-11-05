@@ -7,6 +7,8 @@ import { KYBState } from '~/api/Enums/KYBState'
 import { ConsumeCorporateUserInviteRequest } from '~/api/Requests/Corporates/ConsumeCorporateUserInviteRequest'
 import { $api } from '~/utils/api'
 import { ValidateCorporateUserInviteRequest } from '~/api/Requests/Corporates/ValidateCorporateUserInviteRequest'
+import { CorporateKybStatus } from '~/api/Models/Corporates/CorporateKybStatus'
+import { InitKybProcessResponse } from '~/api/Responses/Corporates/InitKybProcessResponse'
 
 @Module({
   name: 'corporatesV2',
@@ -19,6 +21,8 @@ export default class Corporates extends StoreModule {
   isLoadingRegistration: boolean = false
 
   corporate: Corporate | null = null
+
+  kyb: CorporateKybStatus | null = null
 
   users: any = null
 
@@ -38,6 +42,11 @@ export default class Corporates extends StoreModule {
   }
 
   @Mutation
+  SET_KYB(kyb: CorporateKybStatus) {
+    this.kyb = kyb
+  }
+
+  @Mutation
   SET_USERS(_users) {
     this.users = _users
   }
@@ -46,7 +55,7 @@ export default class Corporates extends StoreModule {
   register(request: CreateCorporateRequest) {
     this.SET_IS_LOADING(true)
 
-    const req = $api.post('/app/api/corporates/_/create', request)
+    const req = $api.post<Corporate>('/app/api/corporates/_/create', request)
 
     req.then((res) => {
       this.SET_CORPORATE(res.data)
@@ -63,13 +72,24 @@ export default class Corporates extends StoreModule {
   getCorporateDetails(corporateId) {
     this.SET_IS_LOADING(true)
 
-    const req = $api.post('/app/api/corporates/' + corporateId + '/get', {})
+    const req = $api.post<Corporate>('/app/api/corporates/' + corporateId + '/get', {})
 
     req.then((res) => {
       this.SET_CORPORATE(res.data)
     })
     req.finally(() => {
       this.SET_IS_LOADING(false)
+    })
+
+    return req
+  }
+
+  @Action({ rawError: true })
+  getKyb(corporateId: number) {
+    const req = $api.post<CorporateKybStatus>('/app/api/corporates/' + corporateId + '/kyb/get', {})
+
+    req.then((res) => {
+      this.SET_KYB(res.data)
     })
 
     return req
@@ -155,10 +175,10 @@ export default class Corporates extends StoreModule {
   async checkKYB() {
     if (this.corporate === null) {
       const _corpId = this.store.getters['auth/auth'].identity.id
-      await this.getCorporateDetails(_corpId)
+      await this.getKyb(_corpId)
     }
 
-    const _res = this.corporate!.kyb!.fullCompanyChecksVerified === KYBState.APPROVED
+    const _res = this.kyb!.fullCompanyChecksVerified === KYBState.APPROVED
 
     if (!_res) {
       return Promise.reject(new Error('KYB not approved'))
@@ -179,7 +199,12 @@ export default class Corporates extends StoreModule {
 
   @Action({ rawError: true })
   startKYB(corporateId) {
-    return $api.post('/app/api/corporates/' + corporateId + '/kyb/start', {})
+    return $api.post<InitKybProcessResponse>('/app/api/corporates/' + corporateId + '/kyb/start', {})
+  }
+
+  @Action({ rawError: true })
+  startKYC(corporateId) {
+    return $api.post<InitKybProcessResponse>('/app/api/corporates/' + corporateId + '/kyb/start', {})
   }
 
   @Action({ rawError: true })
