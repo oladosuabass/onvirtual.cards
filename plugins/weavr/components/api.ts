@@ -1,14 +1,13 @@
 'use strict'
 
-
 export interface SecureClient {
   init(publicApiKey: string, options: SecureClientOptions): void
 
   associate(authToken: string, resolve?: () => void, reject?: (e?: any) => void): void
 
-  kyb(): KYB
+  kyb(options: KYBOptions): KYB
 
-  kyc(): KYC
+  kyc(options: KYCOptions): KYC
 
   form(): SecureForm
 
@@ -145,40 +144,82 @@ export interface SecureElementStyleWithPseudoClasses extends SecureElementStyle 
   ':-webkit-autofill'?: SecureElementStyle
 }
 
-export interface SumSubAuthObject {
-  externalUserId: string
-  accessToken: string
+export declare type VerificationFlowLoadHandler = () => void
+export declare type VerificationFlowLaunchHandler = (response: KYBLaunchParams) => void
+
+export interface VerificationFlow {
+  getPath(identityId: bigint, referenceId: bigint): string
+
+  getParams(token: string, identityId: bigint, referenceId: bigint, callback: VerificationFlowLaunchHandler): void
+
+  getParamsAndLaunch(token: string, identityId: bigint, referenceId: bigint): void
+
+  launch(params: KYBLaunchParams | KYCLaunchParams): SumSub | Idenfy
 }
 
-export interface KYBAuthObject extends SumSubAuthObject {
+export interface KYB extends VerificationFlow {
+  options: KYBOptions
 
+  launch(params: KYBLaunchParams): SumSub
 }
 
-export interface KYBOptions {
-  onMessage?: (messageType: any, payload: any) => void,
+export interface KYC extends VerificationFlow {
+  options: KYCOptions
+
+  launch(params: KYCLaunchParams): Idenfy
+}
+
+export interface VerificationFlowProvider {
+  type: VerificationFlowProviders.SUMSUB | VerificationFlowProviders.IDENFY
+
+  load(callback: VerificationFlowLoadHandler): void
+}
+
+export interface VerificationFlowOptions {
+  selector: string
+}
+
+export interface KYBOptions extends VerificationFlowOptions {
+  onMessage?: (messageType: any, payload: any) => void
   onError?: (error: any) => void
   customCss?: string
   customCssStr?: string
 }
 
-export interface KYB {
-  init(
-    token: string,
-    corporateId: string | number,
-    referenceId: string | number,
-    selector: string,
-    opts: KYBOptions
-  ): void
+export interface KYCOptions extends VerificationFlowOptions {
+  onMessage?: (event: any) => void
 }
 
-export interface KYCAuthObject extends SumSubAuthObject {
-
+export interface LaunchParams {
+  email: string
+  mobile: string
 }
 
-export interface KYCOptions {
-  customCss?: string
+export interface KYBLaunchParams extends LaunchParams {
+  accessToken: string
+  verificationFlow: string
+  externalUserId?: bigint
+  kybProviderKey?: VerificationFlowProviders.SUMSUB
 }
 
-export interface KYC {
-  init(selector: string, auth: KYCAuthObject, listener: (messageType: any, payload: any) => void, options?: KYCOptions): void
+export interface KYCLaunchParams extends LaunchParams {
+  redirectUrl: string
+  kycProviderKey?: VerificationFlowProviders.IDENFY
+}
+
+export interface SumSub extends VerificationFlowProvider {
+  type: VerificationFlowProviders.SUMSUB
+
+  launch(params: KYBLaunchParams): void
+}
+
+export interface Idenfy extends VerificationFlowProvider {
+  type: VerificationFlowProviders.IDENFY
+
+  launch(params: KYCLaunchParams): void
+}
+
+export enum VerificationFlowProviders {
+  IDENFY = 'idenfy',
+  SUMSUB = 'sumsub'
 }

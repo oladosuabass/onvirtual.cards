@@ -1,5 +1,5 @@
 <template>
-  <div id="idensic" />
+  <div id="weavr-kyc" />
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from 'nuxt-property-decorator'
@@ -7,28 +7,19 @@ import { KYCOptions } from './api'
 
 @Component
 export default class WeavrKyc extends Vue {
-  @Prop({}) corporateId!: string
-  @Prop({}) accessToken!: string
-  @Prop({}) options!: KYCOptions
+  @Prop({}) consumerId!: bigint
+  @Prop({}) reference!: bigint
+  @Prop({}) options!: Partial<KYCOptions>
 
   mounted() {
-    this.$OpcUxSecureClient.kyc().init(
-      '#idensic',
-      {
-        accessToken: this.accessToken,
-        externalUserId: this.corporateId
-      },
-      this.sumsubMessage.bind(this),
-      this.options
-    )
+    this.$OpcUxSecureClient
+      .kyc({ selector: '#weavr-kyc', ...this.options, onMessage: this.message })
+      .getParamsAndLaunch('Bearer ' + this.$store.getters['auth/token'], this.consumerId, this.reference)
   }
 
   @Emit('message')
-  sumsubMessage(messageType, payload) {
-    return {
-      messageType: messageType,
-      payload: payload
-    }
+  message(event: any) {
+    return event
   }
 }
 </script>
