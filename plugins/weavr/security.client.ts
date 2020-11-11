@@ -4,9 +4,9 @@ import WeavrForm from '~/plugins/weavr/components/WeavrForm.vue'
 import WeavrInput from '~/plugins/weavr/components/WeavrInput.vue'
 import WeavrSpan from '~/plugins/weavr/components/WeavrSpan.vue'
 import { SecureClient } from '~/plugins/weavr/components/api'
-import WeavrKyb from '~/plugins/weavr/components/WeavrKyb.vue'
-import WeavrKyc from '~/plugins/weavr/components/WeavrKyc.vue'
-import WeavrKybDirector from '~/plugins/weavr/components/WeavrKybDirector.vue'
+import WeavrConsumerVerificationFlowKyc from '~/plugins/weavr/components/WeavrConsumerVerificationFlowKyc.vue'
+import WeavrCorporateVerificationFlowKyb from '~/plugins/weavr/components/WeavrCorporateVerificationFlowKyb.vue'
+import WeavrCorporateVerificationFlowKyc from '~/plugins/weavr/components/WeavrCorporateVerificationFlowKyc.vue'
 
 // @ts-ignore
 window.OpcUxSecureClient.init(config.api.uiKey, {
@@ -47,9 +47,9 @@ function asyncAssociate(token) {
 Vue.component('weavr-form', WeavrForm)
 Vue.component('weavr-input', WeavrInput)
 Vue.component('weavr-span', WeavrSpan)
-Vue.component('weavr-kyb', WeavrKyb)
-Vue.component('weavr-kyc', WeavrKyc)
-Vue.component('weavr-kyb-director', WeavrKybDirector)
+Vue.component('weavr-consumer-verification-flow-kyc', WeavrConsumerVerificationFlowKyc)
+Vue.component('weavr-corporate-verification-flow-kyb', WeavrCorporateVerificationFlowKyb)
+Vue.component('weavr-corporate-verification-flow-kyc', WeavrCorporateVerificationFlowKyc)
 
 declare module 'vue/types/vue' {
   interface Vue {

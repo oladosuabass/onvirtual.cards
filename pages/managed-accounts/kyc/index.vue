@@ -3,7 +3,11 @@
     <b-container>
       <b-row>
         <b-col>
-          <weavr-kyc :consumer-id="consumerId" :reference="reference" @message="receiveMessage" />
+          <weavr-consumer-verification-flow-kyc
+            :consumer-id="consumerId"
+            :reference="reference"
+            @message="receiveMessage"
+          />
         </b-col>
       </b-row>
     </b-container>

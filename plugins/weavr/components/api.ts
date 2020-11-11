@@ -5,9 +5,9 @@ export interface SecureClient {
 
   associate(authToken: string, resolve?: () => void, reject?: (e?: any) => void): void
 
-  kyb(options: KYBOptions): KYB
+  corporateVerificationFlow(options: CorporateVerificationFlowOptions): CorporateVerificationFlowContract
 
-  kyc(options: KYCOptions): KYC
+  consumerVerificationFlow(options: ConsumerVerificationFlowOptions): ConsumerVerificationFlowContract
 
   form(): SecureForm
 
@@ -145,7 +145,7 @@ export interface SecureElementStyleWithPseudoClasses extends SecureElementStyle 
 }
 
 export declare type VerificationFlowLoadHandler = () => void
-export declare type VerificationFlowLaunchHandler = (response: KYBLaunchParams) => void
+export declare type VerificationFlowLaunchHandler = (response: CorporateVerificationFlowLaunchParams) => void
 
 export interface VerificationFlow {
   getPath(identityId: bigint, referenceId: bigint): string
@@ -154,19 +154,25 @@ export interface VerificationFlow {
 
   getParamsAndLaunch(token: string, identityId: bigint, referenceId: bigint): void
 
-  launch(params: KYBLaunchParams | KYCLaunchParams): SumSub | Idenfy
+  launch(params: CorporateVerificationFlowLaunchParams | ConsumerVerificationFlowLaunchParams): SumSub | Idenfy
 }
 
-export interface KYB extends VerificationFlow {
-  options: KYBOptions
+export interface CorporateVerificationFlowContract extends VerificationFlow {
+  options: CorporateVerificationFlowOptions
 
-  launch(params: KYBLaunchParams): SumSub
+  launch(params: CorporateVerificationFlowLaunchParams): SumSub
+
+  kyb(params:{token: string, corporateId: bigint, referenceId: bigint}): void
+
+  kyc(params: CorporateVerificationFlowLaunchParams): SumSub
 }
 
-export interface KYC extends VerificationFlow {
-  options: KYCOptions
+export interface ConsumerVerificationFlowContract extends VerificationFlow {
+  options: ConsumerVerificationFlowOptions
 
-  launch(params: KYCLaunchParams): Idenfy
+  launch(params: ConsumerVerificationFlowLaunchParams): Idenfy
+
+  kyc(params: { token: string, consumerId: bigint, referenceId: bigint }): void
 }
 
 export interface VerificationFlowProvider {
@@ -179,14 +185,14 @@ export interface VerificationFlowOptions {
   selector: string
 }
 
-export interface KYBOptions extends VerificationFlowOptions {
+export interface CorporateVerificationFlowOptions extends VerificationFlowOptions {
   onMessage?: (messageType: any, payload: any) => void
   onError?: (error: any) => void
   customCss?: string
   customCssStr?: string
 }
 
-export interface KYCOptions extends VerificationFlowOptions {
+export interface ConsumerVerificationFlowOptions extends VerificationFlowOptions {
   onMessage?: (event: any) => void
 }
 
@@ -195,14 +201,14 @@ export interface LaunchParams {
   mobile: string
 }
 
-export interface KYBLaunchParams extends LaunchParams {
+export interface CorporateVerificationFlowLaunchParams extends LaunchParams {
   accessToken: string
   verificationFlow: string
   externalUserId?: bigint
   kybProviderKey?: VerificationFlowProviders.SUMSUB
 }
 
-export interface KYCLaunchParams extends LaunchParams {
+export interface ConsumerVerificationFlowLaunchParams extends LaunchParams {
   redirectUrl: string
   kycProviderKey?: VerificationFlowProviders.IDENFY
 }
@@ -210,13 +216,13 @@ export interface KYCLaunchParams extends LaunchParams {
 export interface SumSub extends VerificationFlowProvider {
   type: VerificationFlowProviders.SUMSUB
 
-  launch(params: KYBLaunchParams): void
+  launch(params: CorporateVerificationFlowLaunchParams): void
 }
 
 export interface Idenfy extends VerificationFlowProvider {
   type: VerificationFlowProviders.IDENFY
 
-  launch(params: KYCLaunchParams): void
+  launch(params: ConsumerVerificationFlowLaunchParams): void
 }
 
 export enum VerificationFlowProviders {

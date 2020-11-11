@@ -3,13 +3,13 @@
     <b-container>
       <b-row :class="{ 'd-none': accessTokenError }">
         <b-col>
-          <weavr-kyb-director
-                  :access-token="accessToken"
-                  :verification-flow="verificationFlow"
-                  :email="email"
-                  :mobile="mobile"
-                  :options="kybOptions"
-                  @message="handleSumSubMessage"
+          <weavr-corporate-verification-flow-kyc
+            :access-token="accessToken"
+            :verification-flow="verificationFlow"
+            :email="email"
+            :mobile="mobile"
+            :options="options"
+            @message="handleSumSubMessage"
           />
         </b-col>
       </b-row>
@@ -32,7 +32,7 @@
 import { Component, mixins } from 'nuxt-property-decorator'
 import { BIcon, BIconBoxArrowUpRight } from 'bootstrap-vue'
 import BaseMixin from '~/minixs/BaseMixin'
-import { KYBOptions } from '~/plugins/weavr/components/api'
+import { CorporateVerificationFlowOptions } from '~/plugins/weavr/components/api'
 
 @Component({
   components: {
@@ -48,7 +48,7 @@ export default class KybPage extends mixins(BaseMixin) {
 
   accessTokenError: boolean = false
 
-  get kybOptions(): Partial<KYBOptions> {
+  get options(): Partial<CorporateVerificationFlowOptions> {
     return {
       customCss: ''
     }
@@ -57,9 +57,9 @@ export default class KybPage extends mixins(BaseMixin) {
   asyncData({ route }) {
     return {
       accessToken: route.query.token,
-      verificationFlow: route.query.flow,
+      verificationFlow: route.query.verification_flow,
       email: route.query.email,
-      mobile: route.query.mobile
+      mobile: route.query.phone
     }
   }
 

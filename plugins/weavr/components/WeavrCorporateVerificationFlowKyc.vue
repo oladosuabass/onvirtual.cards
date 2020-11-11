@@ -1,23 +1,23 @@
 <template>
-  <div id="weavr-kyb-director" />
+  <div id="weavr-corporate-verification-flow-kyc" />
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Emit } from 'nuxt-property-decorator'
-import { KYBOptions } from '~/plugins/weavr/components/api'
+import { CorporateVerificationFlowOptions } from '~/plugins/weavr/components/api'
 
 @Component
-export default class WeavrKybDirector extends Vue {
+export default class WeavrCorporateVerificationFlowKyc extends Vue {
   @Prop({}) accessToken!: string
   @Prop({}) verificationFlow!: string
   @Prop({}) email!: string
   @Prop({}) mobile!: string
 
-  @Prop({}) options!: Partial<KYBOptions>
+  @Prop({}) options!: Partial<CorporateVerificationFlowOptions>
 
   mounted() {
     this.$OpcUxSecureClient
-      .kyb({ selector: '#weavr-kyb-director', ...this.options, onMessage: this.sumsubMessage })
-      .launch({
+      .corporateVerificationFlow({ selector: '#weavr-corporate-verification-flow-kyc', ...this.options, onMessage: this.sumsubMessage })
+      .kyc({
         accessToken: this.accessToken,
         verificationFlow: this.verificationFlow,
         email: this.email,
