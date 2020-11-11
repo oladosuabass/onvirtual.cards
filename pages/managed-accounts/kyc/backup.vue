@@ -3,10 +3,13 @@
     <b-container>
       <b-row>
         <b-col>
-          <weavr-consumer-verification-flow-kyc
-            :consumer-id="consumerId"
-            :reference="reference"
-            @message="receiveMessage"
+          <iframe
+                  id="iframe"
+                  :src="redirectUrl"
+                  allowfullscreen
+                  style="width:100%; height:800px;"
+                  allow="camera *;"
+                  frameborder="0"
           />
         </b-col>
       </b-row>
@@ -24,16 +27,14 @@ import { accountsStore } from '~/utils/store-accessor'
   components: {}
 })
 export default class KycPage extends mixins(BaseMixin) {
-  reference!: bigint
-  corporateId!: bigint
+  redirectUrl!: string
 
   async asyncData({ store, redirect }) {
     const _consumerId = AuthStore.Helpers.identityId(store)
 
     try {
       const _res = await ConsumersStore.Helpers.startKYC(store, _consumerId)
-
-      return { consumerId: _consumerId, reference: _res.data.reference }
+      return { redirectUrl: _res.data.redirectUrl }
     } catch (e) {
       if (e.response.data.errorCode === 'KYC_ALREADY_APPROVED') {
         const _accounts = await accountsStore(store).index()
@@ -47,6 +48,7 @@ export default class KycPage extends mixins(BaseMixin) {
   }
 
   receiveMessage(event) {
+    console.log(event)
     switch (event.data.status) {
       case 'failed':
         this.$router.push('/managed-accounts/kyc/failed')

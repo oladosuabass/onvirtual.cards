@@ -3,10 +3,12 @@
     <b-container>
       <b-row :class="{ 'd-none': accessTokenError }">
         <b-col>
-          <weavr-kyc
-            :corporate-id="corporateId"
+          <weavr-corporate-verification-flow-kyc
             :access-token="accessToken"
-            :options="kybOptions"
+            :verification-flow="verificationFlow"
+            :email="email"
+            :mobile="mobile"
+            :options="options"
             @message="handleSumSubMessage"
           />
         </b-col>
@@ -29,8 +31,8 @@
 <script lang="ts">
 import { Component, mixins } from 'nuxt-property-decorator'
 import { BIcon, BIconBoxArrowUpRight } from 'bootstrap-vue'
-import { KYBOptions } from '~/plugins/weavr/components/api'
 import BaseMixin from '~/minixs/BaseMixin'
+import { CorporateVerificationFlowOptions } from '~/plugins/weavr/components/api'
 
 @Component({
   components: {
@@ -40,18 +42,25 @@ import BaseMixin from '~/minixs/BaseMixin'
 })
 export default class KybPage extends mixins(BaseMixin) {
   accessToken!: string
-  corporateId!: string
+  verificationFlow!: string
+  email!: string
+  mobile!: string
 
   accessTokenError: boolean = false
 
-  get kybOptions(): KYBOptions {
+  get options(): Partial<CorporateVerificationFlowOptions> {
     return {
       customCss: ''
     }
   }
 
   asyncData({ route }) {
-    return { accessToken: route.query.token, corporateId: route.query.corporate }
+    return {
+      accessToken: route.query.token,
+      verificationFlow: route.query.verification_flow,
+      email: route.query.email,
+      mobile: route.query.phone
+    }
   }
 
   handleSumSubMessage(message) {
