@@ -7,21 +7,17 @@ import { CorporateVerificationFlowOptions } from '~/plugins/weavr/components/api
 
 @Component
 export default class WeavrCorporateVerificationFlowKyc extends Vue {
-  @Prop({}) accessToken!: string
-  @Prop({}) verificationFlow!: string
-  @Prop({}) email!: string
-  @Prop({}) mobile!: string
+  @Prop({}) corporateId!: bigint
+  @Prop({}) reference!: bigint
 
   @Prop({}) options!: Partial<CorporateVerificationFlowOptions>
 
   mounted() {
     this.$OpcUxSecureClient
-      .corporateVerificationFlow({ selector: '#weavr-corporate-verification-flow-kyc', ...this.options, onMessage: this.sumsubMessage })
-      .kyc({
-        accessToken: this.accessToken,
-        verificationFlow: this.verificationFlow,
-        email: this.email,
-        mobile: this.mobile
+      .kyb({ selector: '#weavr-corporate-verification-flow-kyc', ...this.options, onMessage: this.sumsubMessage })
+      .launch({
+        corporateId: this.corporateId,
+        reference: this.reference
       })
   }
 

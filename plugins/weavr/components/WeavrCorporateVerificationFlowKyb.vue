@@ -13,11 +13,10 @@ export default class WeavrCorporateVerificationFlowKyb extends Vue {
 
   mounted() {
     this.$OpcUxSecureClient
-      .corporateVerificationFlow({ selector: '#weavr-corporate-verification-flow-kyb', ...this.options, onMessage: this.sumsubMessage })
-      .kyb({
-        token: 'Bearer ' + this.$store.getters['auth/token'],
+      .kyb({ selector: '#weavr-corporate-verification-flow-kyb', ...this.options, onMessage: this.sumsubMessage })
+      .launch({
         corporateId: this.corporateId,
-        referenceId: this.reference
+        reference: this.reference
       })
   }
 

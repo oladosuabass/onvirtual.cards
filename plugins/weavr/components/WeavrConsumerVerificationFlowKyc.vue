@@ -13,11 +13,10 @@ export default class WeavrConsumerVerificationFlowKyc extends Vue {
 
   mounted() {
     this.$OpcUxSecureClient
-      .consumerVerificationFlow({ selector: '#weavr-consumer-verification-flow-kyc', ...this.options, onMessage: this.message })
-      .kyc({
-        token: 'Bearer ' + this.$store.getters['auth/token'],
+      .kyc({ selector: '#weavr-consumer-verification-flow-kyc', ...this.options, onMessage: this.message })
+      .launch({
         consumerId: this.consumerId,
-        referenceId: this.reference
+        reference: this.reference
       })
   }
 

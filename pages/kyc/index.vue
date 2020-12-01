@@ -4,10 +4,8 @@
       <b-row :class="{ 'd-none': accessTokenError }">
         <b-col>
           <weavr-corporate-verification-flow-kyc
-            :access-token="accessToken"
-            :verification-flow="verificationFlow"
-            :email="email"
-            :mobile="mobile"
+            :corporate-id="identityId"
+            :reference="reference"
             :options="options"
             @message="handleSumSubMessage"
           />
@@ -41,10 +39,9 @@ import { CorporateVerificationFlowOptions } from '~/plugins/weavr/components/api
   }
 })
 export default class KybPage extends mixins(BaseMixin) {
-  accessToken!: string
-  verificationFlow!: string
-  email!: string
-  mobile!: string
+  reference!: string
+  identityId!: string
+  identityType!: string
 
   accessTokenError: boolean = false
 
@@ -56,10 +53,9 @@ export default class KybPage extends mixins(BaseMixin) {
 
   asyncData({ route }) {
     return {
-      accessToken: route.query.token,
-      verificationFlow: route.query.verification_flow,
-      email: route.query.email,
-      mobile: route.query.phone
+      reference: route.query.reference,
+      identityId: route.query.identityId,
+      identityType: route.query.identityType
     }
   }
 

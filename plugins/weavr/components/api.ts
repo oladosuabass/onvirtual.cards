@@ -5,9 +5,9 @@ export interface SecureClient {
 
   associate(authToken: string, resolve?: () => void, reject?: (e?: any) => void): void
 
-  corporateVerificationFlow(options: CorporateVerificationFlowOptions): CorporateVerificationFlowContract
+  kyb(options: CorporateVerificationFlowOptions): CorporateVerificationFlowContract
 
-  consumerVerificationFlow(options: ConsumerVerificationFlowOptions): ConsumerVerificationFlowContract
+  kyc(options: ConsumerVerificationFlowOptions): ConsumerVerificationFlowContract
 
   form(): SecureForm
 
@@ -145,34 +145,44 @@ export interface SecureElementStyleWithPseudoClasses extends SecureElementStyle 
 }
 
 export declare type VerificationFlowLoadHandler = () => void
-export declare type VerificationFlowLaunchHandler = (response: CorporateVerificationFlowLaunchParams) => void
+export declare type VerificationFlowLaunchHandler = (response: CorporateVerificationFlowLoadAndLaunchParams) => void
 
 export interface VerificationFlow {
-  getPath(identityId: bigint, referenceId: bigint): string
+  getPath(identityId: bigint, reference: bigint): string
 
-  getParams(token: string, identityId: bigint, referenceId: bigint, callback: VerificationFlowLaunchHandler): void
+  getParams(identityId: bigint, reference: bigint, callback: VerificationFlowLaunchHandler): void
 
-  getParamsAndLaunch(token: string, identityId: bigint, referenceId: bigint): void
+  getParamsLoadAndLaunch(identityId: bigint, reference: bigint): void
 
-  launch(params: CorporateVerificationFlowLaunchParams | ConsumerVerificationFlowLaunchParams): SumSub | Idenfy
+  loadAndLaunch(
+    params: CorporateVerificationFlowLoadAndLaunchParams | ConsumerVerificationFlowLoadAndLaunchParams
+  ): SumSub | Idenfy
+}
+
+export interface CorporateVerificationFlowLaunchParams {
+  corporateId: bigint
+  reference: bigint
 }
 
 export interface CorporateVerificationFlowContract extends VerificationFlow {
   options: CorporateVerificationFlowOptions
 
-  launch(params: CorporateVerificationFlowLaunchParams): SumSub
+  loadAndLaunch(params: CorporateVerificationFlowLoadAndLaunchParams): SumSub
 
-  kyb(params:{token: string, corporateId: bigint, referenceId: bigint}): void
+  launch(params: CorporateVerificationFlowLaunchParams): void
+}
 
-  kyc(params: CorporateVerificationFlowLaunchParams): SumSub
+export interface ConsumerVerificationFlowLaunchParams {
+  consumerId: bigint
+  reference: bigint
 }
 
 export interface ConsumerVerificationFlowContract extends VerificationFlow {
   options: ConsumerVerificationFlowOptions
 
-  launch(params: ConsumerVerificationFlowLaunchParams): Idenfy
+  loadAndLaunch(params: ConsumerVerificationFlowLoadAndLaunchParams): Idenfy | SumSub
 
-  kyc(params: { token: string, consumerId: bigint, referenceId: bigint }): void
+  launch(params: ConsumerVerificationFlowLaunchParams): void
 }
 
 export interface VerificationFlowProvider {
@@ -194,35 +204,49 @@ export interface CorporateVerificationFlowOptions extends VerificationFlowOption
 
 export interface ConsumerVerificationFlowOptions extends VerificationFlowOptions {
   onMessage?: (event: any) => void
+  onError?: (error: any) => void
+  customCss?: string
+  customCssStr?: string
 }
 
 export interface LaunchParams {
-  email: string
-  mobile: string
+  email?: string
+  mobile?: string
 }
 
-export interface CorporateVerificationFlowLaunchParams extends LaunchParams {
+export interface CorporateVerificationFlowLoadAndLaunchParams extends LaunchParams {
   accessToken: string
   verificationFlow: string
   externalUserId?: bigint
   kybProviderKey?: VerificationFlowProviders.SUMSUB
 }
 
-export interface ConsumerVerificationFlowLaunchParams extends LaunchParams {
+export interface SumSubConsumerVerificationFlowLoadAndLaunchParams extends LaunchParams {
+  accessToken: string
+  verificationFlow: string
+  externalUserId?: bigint
+  kycProviderKey?: VerificationFlowProviders.IDENFY | VerificationFlowProviders.SUMSUB
+}
+
+export interface IdenfyConsumerVerificationFlowLoadAndLaunchParams extends LaunchParams {
   redirectUrl: string
   kycProviderKey?: VerificationFlowProviders.IDENFY
 }
 
+export type ConsumerVerificationFlowLoadAndLaunchParams =
+  | SumSubConsumerVerificationFlowLoadAndLaunchParams
+  | IdenfyConsumerVerificationFlowLoadAndLaunchParams
+
 export interface SumSub extends VerificationFlowProvider {
   type: VerificationFlowProviders.SUMSUB
 
-  launch(params: CorporateVerificationFlowLaunchParams): void
+  launch(params: CorporateVerificationFlowLoadAndLaunchParams): void
 }
 
 export interface Idenfy extends VerificationFlowProvider {
   type: VerificationFlowProviders.IDENFY
 
-  launch(params: ConsumerVerificationFlowLaunchParams): void
+  launch(params: ConsumerVerificationFlowLoadAndLaunchParams): void
 }
 
 export enum VerificationFlowProviders {
