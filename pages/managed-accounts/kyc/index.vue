@@ -47,7 +47,7 @@ export default class KycPage extends mixins(BaseMixin) {
   }
 
   receiveMessage(event) {
-    switch (event.data.status) {
+    switch (event.data && event.data.status) {
       case 'failed':
         this.$router.push('/managed-accounts/kyc/failed')
         break
