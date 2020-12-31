@@ -3,7 +3,6 @@ import * as dotenv from 'dotenv'
 const env = dotenv.config({ debug: true })
 
 const config = {
-  mode: 'spa',
   env: env.parsed,
   server: {
     port: 5000
