@@ -10,7 +10,7 @@
     <b-row class="justify-content-center my-5">
       <b-col md="8">
         <h2 class="font-weight-light text-center line-height-lg">
-          Will you be using RADA for personal or business use?
+          Will you be using OnVirtual Cards for personal or business use?
         </h2>
       </b-col>
     </b-row>
